@@ -52,11 +52,17 @@ const VideoCard = ({ displayVideo, setDeleteStatus }) => {
     }
 
   }
+  const dragStarted=(e,id)=>{
+    console.log(`video with ${id} dragged`);
+    e.dataTransfer.setData("videoID",id)
+    
+
+  }
 
 
   return (
     <>
-      <Card style={{ width: '17rem', margin: "10px" }}>
+      <Card style={{ width: '17rem', margin: "10px" }} draggable onDragStart={(e)=>{dragStarted(e,displayVideo.id)}}>
         <Card.Img variant="top" src={displayVideo.thumbnailUrl} width={'300px'} onClick={handleShow} />
         <Card.Body>
           <div className='d-flex justify-content-between'>

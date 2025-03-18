@@ -4,11 +4,11 @@ import Modal from 'react-bootstrap/Modal';
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { toast } from 'react-toastify';
-import { addCatagory, deleteCatagory, getallCatagories } from '../services/allApi';
+import { addCatagory, deleteCatagory, getallCatagories, getvideobyID } from '../services/allApi';
 
 
 const Catagory = () => {
-  const [refresh,setRefresh] = useState({})
+  const [refresh, setRefresh] = useState({})
   const [show, setShow] = useState(false);
   const [catagory, setCatagory] = useState([])
 
@@ -56,14 +56,36 @@ const Catagory = () => {
     getCatagory()
   }, [refresh])
 
-  const removeCatagory = async (id,catogName) => {
+  const removeCatagory = async (id, catogName) => {
     const delresponse = await deleteCatagory(id)
     // console.log(delresponse);
-    if(delresponse.status===200){
+    if (delresponse.status === 200) {
       setRefresh(delresponse)
       toast.success(`${catogName} Catagory Deleted Succesfully!`)
     }
+
+
+  }
+  const dragOver = (e) => {
+    e.preventDefault();
+    console.log("inside drag over");
+
+  }
+
+  const videoDropped = async (e, id) => {
+    // console.log("dropped inside ",id);
+    const vID = e.dataTransfer.getData("videoID");
+
+    const result = await getvideobyID(vID)
+    const { data } = result
+    console.log("result", data);
+    const selectedCatagory =catagory?.find((item)=>item.id==id);
+    selectedCatagory.allVideos.push(data);
+    console.log("final catagory",selectedCatagory);
     
+
+    // console.log(`Video with id ${vID} is dropped in Category with Id ${id}`)
+
 
   }
 
@@ -101,10 +123,10 @@ const Catagory = () => {
 
       {
         catagory?.map((item) => (
-          <div className='border border-secondary rounded p-3 m-3'>
+          <div className='border border-secondary rounded p-3 m-3' droppable onDragOver={(e) => { dragOver(e) }} onDrop={(e) => videoDropped(e, item.id)}>
             <div className='d-flex justify-content-between align-items-center'>
               <h6 color='white'>{item.catogName}</h6>
-              <Button variant="white" onClick={() => removeCatagory(item.id,item.catogName)} ><i class="fa-solid fa-trash text-danger" ></i></Button>
+              <Button variant="white" onClick={() => removeCatagory(item.id, item.catogName)} ><i class="fa-solid fa-trash text-danger" ></i></Button>
             </div>
           </div>
         ))
