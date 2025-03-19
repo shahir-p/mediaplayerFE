@@ -58,3 +58,8 @@ export const deleteCatagory=async(id)=>{
  export const getvideobyID=async(id)=>{
   return await commonApi('GET',`${serverurl}/videos/${id}`,"")
 }
+
+// update category
+export const updateCategory = async (id, data) => {
+  return await commonApi('PUT', `${serverurl}/catagories/${id}`, data)
+}
