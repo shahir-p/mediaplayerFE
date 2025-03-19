@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { toast } from 'react-toastify';
-import { addCatagory, deleteCatagory, getallCatagories, getvideobyID } from '../services/allApi';
+import { addCatagory, deleteCatagory, getallCatagories, getvideobyID, updateCategory } from '../services/allApi';
 
 
 const Catagory = () => {
@@ -82,6 +82,9 @@ const Catagory = () => {
     const selectedCatagory =catagory?.find((item)=>item.id==id);
     selectedCatagory.allVideos.push(data);
     console.log("final catagory",selectedCatagory);
+
+    const response= await updateCategory(id,selectedCatagory)
+    setRefresh(response)
     
 
     // console.log(`Video with id ${vID} is dropped in Category with Id ${id}`)
@@ -127,7 +130,15 @@ const Catagory = () => {
             <div className='d-flex justify-content-between align-items-center'>
               <h6 color='white'>{item.catogName}</h6>
               <Button variant="white" onClick={() => removeCatagory(item.id, item.catogName)} ><i class="fa-solid fa-trash text-danger" ></i></Button>
+            
             </div>
+            {
+                item.allVideos?.length>0?
+                item.allVideos.map((item)=>(
+                  <img src={item.thumbnailUrl} alt=""  className='mb-2'/>
+                )):
+              <h6>Add any video</h6>
+              }
           </div>
         ))
       }
